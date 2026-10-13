@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Publik hanya boleh membaca layanan aktif. Hanya akun yang login dapat mengelola data.
+    // Untuk produksi, sebaiknya tambahkan custom claims/daftar UID admin agar tidak semua akun login menjadi admin.
+    match /services/{serviceId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+    match /siteSettings/{settingId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+  }
+}
